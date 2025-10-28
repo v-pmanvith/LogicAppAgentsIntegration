@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "foundryEndpoint": {
+      "type": "String"
+    },
+    "foundryApiKey": {
+      "type": "SecureString"
+    },
+    "agentId": {
+      "type": "String"
+    }
+  },
+  "triggers": {
+    "RecurrenceTrigger": {
+      "type": "Recurrence",
+      "recurrence": {
+        "frequency": "Day",
+        "interval": 1
+      }
+    }
+  },
+  "actions": {
+    "CreateFoundryAgentRun": {
+      "type": "Http",
+      "inputs": {
+        "uri": "@concat(parameters('foundryEndpoint'), '/agents/', parameters('agentId'), '/runs')",
+        "method": "POST",
+        "headers": {
+          "Content-Type": "application/json",
+          "Authorization": "@concat('Bearer ', parameters('foundryApiKey'))"
+        },
+        "body": {
+          "instructions": "Execute scheduled task - analyze and provide insights on system status",
+          "model": "@parameters('agentId')",
+          "metadata": {
+            "triggeredBy": "LogicApp-Scheduler",
+            "timestamp": "@utcNow()"
+          }
+        }
+      },
+      "runAfter": {}
+    },
+    "GetRunStatus": {
+      "type": "Http",
+      "inputs": {
+        "uri": "@concat(parameters('foundryEndpoint'), '/agents/', parameters('agentId'), '/runs/', body('CreateFoundryAgentRun')['id'])",
+        "method": "GET",
+        "headers": {
+          "Authorization": "@concat('Bearer ', parameters('foundryApiKey'))"
+        }
+      },
+      "runAfter": {
+        "CreateFoundryAgentRun": ["Succeeded"]
+      }
+    }
+  },
+  "outputs": {}
+}
