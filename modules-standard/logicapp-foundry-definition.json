@@ -1,0 +1,80 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "triggers": {
+            "RecurrenceTrigger": {
+                "type": "Recurrence",
+                "recurrence": {
+                    "frequency": "Day",
+                    "interval": 1
+                }
+            }
+        },
+        "actions": {
+            "Create_Run": {
+                "type": "ApiConnection",
+                "inputs": {
+                    "host": {
+                        "connection": {
+                            "name": "@parameters('$connections')['azureagentservice']['connectionId']"
+                        }
+                    },
+                    "method": "post",
+                    "body": {
+                        "assistant_id": "",
+                        "temperature": 1,
+                        "top_p": 1
+                    },
+                    "path": "/threads/@{encodeURIComponent('')}/runs",
+                    "queries": {
+                        "api-version": "2025-05-01"
+                    }
+                },
+                "runAfter": {}
+            }
+        },
+        "outputs": {},
+        "parameters": {
+            "foundryEndpoint": {
+                "type": "String"
+            },
+            "foundryApiKey": {
+                "type": "SecureString"
+            },
+            "agentId": {
+                "type": "String"
+            },
+            "$connections": {
+                "type": "Object",
+                "defaultValue": {}
+            }
+        }
+    },
+    "parameters": {
+        "foundryEndpoint": {
+            "value": ""
+        },
+        "foundryApiKey": {
+            "value": ""
+        },
+        "agentId": {
+            "value": ""
+        },
+        "$connections": {
+            "type": "Object",
+            "value": {
+                "azureagentservice": {
+                    "id": "/subscriptions/921496dc-987f-410f-bd57-426eb2611356/providers/Microsoft.Web/locations/eastus2/managedApis/azureagentservice",
+                    "connectionId": "/subscriptions/921496dc-987f-410f-bd57-426eb2611356/resourceGroups/megha-1rp-eastus2-rg/providers/Microsoft.Web/connections/azureagentservice-1",
+                    "connectionName": "azureagentservice-1",
+                    "connectionProperties": {
+                        "authentication": {
+                            "type": "ManagedServiceIdentity"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

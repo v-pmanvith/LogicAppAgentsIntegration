@@ -8,11 +8,10 @@ import os
 
 from azure.identity import DefaultAzureCredential
 from azure.mgmt.logic import LogicManagementClient
-from azure.mgmt.resource import ResourceManagementClient
 from azure.mgmt.logic.models import Workflow
+from dotenv import load_dotenv
 
-# - other dependence -
-# - end -
+load_dotenv()
 
 
 def main():
@@ -25,38 +24,26 @@ def main():
     FOUNDRY_API_KEY = os.environ.get("FOUNDRY_API_KEY", None)
     AGENT_ID = os.environ.get("AGENT_ID", None)
 
-    # Create client
-    resource_client = ResourceManagementClient(
-        credential=DefaultAzureCredential(),
-        subscription_id=SUBSCRIPTION_ID
-    )
     logic_client = LogicManagementClient(
         credential=DefaultAzureCredential(),
         subscription_id=SUBSCRIPTION_ID
-    )
-    # - init depended client -
-    # - end -
-
-    # Create resource group
-    resource_client.resource_groups.create_or_update(
-        GROUP_NAME,
-        {"location": location}
     )
 
     # Load the workflow definition from JSON file
     import json
 
     # Read the workflow definition from the JSON file
-    with open('modules-standard/logicapp-definition.json', 'r') as f:
+    with open('modules-standard/logicapp-foundry-definition.json', 'r') as f:
         workflow_definition = json.load(f)
 
     workflow = Workflow(
         location=location,
-        definition=workflow_definition,
+        definition=workflow_definition["definition"],
         parameters={
             "foundryEndpoint": {"value": FOUNDRY_ENDPOINT},
             "foundryApiKey": {"value": FOUNDRY_API_KEY},
-            "agentId": {"value": AGENT_ID}
+            "agentId": {"value": AGENT_ID},
+            "$connections": workflow_definition["parameters"]["$connections"]
         }
     )
 
