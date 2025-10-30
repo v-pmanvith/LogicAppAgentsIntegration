@@ -4,8 +4,11 @@
 # ------------------------------------
 
 import os
+from pathlib import Path
 from azure.ai.agents import AgentsClient
 from azure.identity import DefaultAzureCredential
+from dotenv import load_dotenv, set_key
+load_dotenv()
 
 
 def create_foundry_agent():
@@ -31,30 +34,13 @@ def create_foundry_agent():
         return agent.id
 
 
-def create_agent_run(agent_id, instructions=None):
-    """Create a new run for the specified agent."""
-    agents_client = AgentsClient(
-        endpoint=os.environ["PROJECT_ENDPOINT"],
-        credential=DefaultAzureCredential(),
-    )
-
-    with agents_client:
-        if instructions is None:
-            instructions = (
-                "Perform your scheduled analysis and provide a summary "
-                "of current system status and any recommendations."
-            )
-
-        run = agents_client.create_run(
-            agent_id=agent_id,
-            instructions=instructions
-        )
-        print(f"Created agent run, run ID: {run.id}")
-        return run.id
-
-
 if __name__ == "__main__":
-    # Create the agent and display the ID for Logic App configuration
+    # Create the agent and add ID to .env for Logic App configuration
     agent_id = create_foundry_agent()
     print("Agent created successfully.")
-    print(f"Use this ID in your Logic App: {agent_id}")
+
+    env_path = Path(".") / ".env"
+    env_path.touch(exist_ok=True)
+
+    set_key(env_path, "FOUNDRY_API_KEY", f"{agent_id}")
+    print(f"Agent ID has been added to env file: {agent_id}")
