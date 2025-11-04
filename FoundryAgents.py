@@ -30,17 +30,22 @@ def create_foundry_agent():
                 "actionable recommendations."
             ),
         )
+
+        thread = agents_client.threads.create()
+        print(f"Created thread, thread ID: {thread.id}")
         print(f"Created agent, agent ID: {agent.id}")
-        return agent.id
+        return agent.id, thread.id
 
 
 if __name__ == "__main__":
     # Create the agent and add ID to .env for Logic App configuration
-    agent_id = create_foundry_agent()
+    agent_id, thread_id = create_foundry_agent()
     print("Agent created successfully.")
 
     env_path = Path(".") / ".env"
     env_path.touch(exist_ok=True)
 
-    set_key(env_path, "FOUNDRY_API_KEY", f"{agent_id}")
+    set_key(env_path, "AGENT_ID", f"{agent_id}")
+    set_key(env_path, "THREAD_ID", f"{thread_id}")
     print(f"Agent ID has been added to env file: {agent_id}")
+    print(f"Thread ID has been added to env file: {thread_id}")

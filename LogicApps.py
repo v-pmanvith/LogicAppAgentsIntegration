@@ -23,6 +23,7 @@ def main():
     FOUNDRY_ENDPOINT = os.environ.get("PROJECT_ENDPOINT", None)
     FOUNDRY_API_KEY = os.environ.get("FOUNDRY_API_KEY", None)
     AGENT_ID = os.environ.get("AGENT_ID", None)
+    THREAD_ID = os.environ.get("THREAD_ID", None)
 
     logic_client = LogicManagementClient(
         credential=DefaultAzureCredential(),
@@ -43,6 +44,8 @@ def main():
             "foundryEndpoint": {"value": FOUNDRY_ENDPOINT},
             "foundryApiKey": {"value": FOUNDRY_API_KEY},
             "agentId": {"value": AGENT_ID},
+            "assistant_id": {"value": AGENT_ID},
+            "threadId": {"value": THREAD_ID},
             "$connections": workflow_definition["parameters"]["$connections"]
         }
     )

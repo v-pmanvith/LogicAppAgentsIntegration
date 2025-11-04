@@ -22,11 +22,11 @@
                     },
                     "method": "post",
                     "body": {
-                        "assistant_id": "",
+                        "assistant_id": "@parameters('assistant_id')",
                         "temperature": 1,
                         "top_p": 1
                     },
-                    "path": "/threads/@{encodeURIComponent('')}/runs",
+                    "path": "/threads/@{encodeURIComponent(parameters('threadId'))}/runs",
                     "queries": {
                         "api-version": "2025-05-01"
                     }
@@ -36,15 +36,11 @@
         },
         "outputs": {},
         "parameters": {
-            "foundryEndpoint": {
-                "type": "String"
-            },
-            "foundryApiKey": {
-                "type": "SecureString"
-            },
-            "agentId": {
-                "type": "String"
-            },
+            "foundryEndpoint": { "type": "String" },
+            "foundryApiKey": { "type": "SecureString" },
+            "agentId": { "type": "String" },
+            "threadId": { "type": "String" },
+            "assistant_id": { "type": "String" },
             "$connections": {
                 "type": "Object",
                 "defaultValue": {}
@@ -52,15 +48,11 @@
         }
     },
     "parameters": {
-        "foundryEndpoint": {
-            "value": ""
-        },
-        "foundryApiKey": {
-            "value": ""
-        },
-        "agentId": {
-            "value": ""
-        },
+        "foundryEndpoint": { "value": "" },
+        "foundryApiKey": { "value": "" },
+        "agentId": { "value": "" },
+        "threadId": { "value": "" },
+        "assistant_id": { "value": "" },
         "$connections": {
             "type": "Object",
             "value": {
@@ -69,9 +61,7 @@
                     "connectionId": "/subscriptions/921496dc-987f-410f-bd57-426eb2611356/resourceGroups/megha-1rp-eastus2-rg/providers/Microsoft.Web/connections/azureagentservice-1",
                     "connectionName": "azureagentservice-1",
                     "connectionProperties": {
-                        "authentication": {
-                            "type": "ManagedServiceIdentity"
-                        }
+                        "authentication": { "type": "ManagedServiceIdentity" }
                     }
                 }
             }
