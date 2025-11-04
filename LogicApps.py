@@ -56,13 +56,12 @@ def main():
         workflow
     )
 
-    print("Create logic:\n")
-
     logic_client.workflows.get(
         GROUP_NAME,
         WORKFLOW_NAME
     )
-    print("Get logic:\n")
+
+    print(f"Logic App '{WORKFLOW_NAME}' deployed successfully.")
 
 
 if __name__ == "__main__":
